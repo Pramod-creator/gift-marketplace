@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
 import User from "./User.js";
+import Category from "./Category.js";
 
 const Product = sequelize.define(
   "Product",
@@ -42,12 +43,17 @@ const Product = sequelize.define(
     timestamps: true,
     indexes: [
       { fields: ["seller_id"] },
+      { fields: ["category_id"] },
       { fields: ["is_active"] }
     ]
   }
 );
 
+
 User.hasMany(Product, { foreignKey: "seller_id", onDelete: "CASCADE" });
 Product.belongsTo(User, { foreignKey: "seller_id" });
+
+Category.hasMany(Product, { foreignKey: "category_id" });
+Product.belongsTo(Category, { foreignKey: "category_id" });
 
 export default Product;

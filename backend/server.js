@@ -5,6 +5,11 @@ import sequelize from "./src/config/database.js";
 import User from "./src/models/User.js"; // import your models
 import testRoutes from "./src/routes/testRoutes.js";
 import path from "path";
+import categoryRoutes from "./src/routes/categoryRoutes.js";
+import cartRoutes from "./src/routes/cartRoutes.js";
+import orderRoutes from "./src/routes/orderRoutes.js";
+import sellerRoutes from "./src/routes/sellerRoutes.js";
+import adminRoutes from "./src/routes/adminRoutes.js";
 
 const PORT = process.env.PORT || 5000;
 
@@ -26,5 +31,14 @@ app.use("/api/test", testRoutes);
 
 // Serve uploaded files
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
+app.use("/api/categories", categoryRoutes);
+
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
+
+app.use("/api/seller", sellerRoutes);
+
+app.use("/api/admin", adminRoutes);
 
 startServer();

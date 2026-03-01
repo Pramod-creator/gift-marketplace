@@ -9,8 +9,8 @@ export const createProduct = async (req, res) => {
   try {
     const { name, description, price } = req.body;
 
-    if (!name || price === undefined) {
-      return res.status(400).json({ message: "Name and price are required" });
+    if (!name || !price || Number(price) <= 0) {
+      return res.status(400).json({ message: "Valid name and price required" });
     }
 
     if (isNaN(price) || Number(price) <= 0) {
@@ -30,6 +30,17 @@ export const createProduct = async (req, res) => {
     console.error("Create product error:", error.message);
     res.status(500).json({ message: "Failed to create product" });
   }
+
+    const { name, description, price, category_id } = req.body;
+
+    const product = await Product.create({
+      name,
+      description,
+      price,
+      category_id,
+      image_url: req.file ? `/${req.file.path.replace(/\\/g, "/")}` : null,
+      seller_id: req.user.id
+    });
 };
 
 /**
