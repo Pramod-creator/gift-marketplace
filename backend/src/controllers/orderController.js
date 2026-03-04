@@ -48,3 +48,23 @@ export const checkout = async (req, res) => {
     res.status(500).json({ message: "Checkout failed" });
   }
 };
+
+export const getMyOrders = async (req, res) => {
+  try {
+    const orders = await Order.findAll({
+      where: { user_id: req.user.id },
+      include: [
+        {
+          model: OrderItem,
+          include: [{ model: Product, attributes: ["id", "name", "price", "image_url"] }]
+        }
+      ],
+      order: [["createdAt", "DESC"]]
+    });
+
+    res.json(orders);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

@@ -1,58 +1,55 @@
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../auth/AuthContext";
+import "../styles/navbar.css";
 
 export default function Navbar() {
   const { user, setUser } = useContext(AuthContext);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
+    setMenuOpen(false);
   };
 
   return (
-    <nav
-      style={{
-        background: "#222",
-        color: "white",
-        padding: "1rem 2rem",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <div>
-        <Link to="/" style={{ color: "white", textDecoration: "none" }}>
+    <nav className="navbar">
+      <div className="navbar-container container">
+        <Link to="/" className="navbar-brand">
           🎁 Gift Marketplace
         </Link>
-      </div>
 
-      <div style={{ display: "flex", gap: "1rem" }}>
-        <Link to="/" style={{ color: "white" }}>Products</Link>
+        <div className="navbar-menu">
+          <Link to="/" className="nav-link">Products</Link>
 
-        {user?.role === "customer" && (
-          <Link to="/cart" style={{ color: "white" }}>Cart</Link>
-        )}
+          {user?.role === "customer" && (
+            <>
+              <Link to="/cart" className="nav-link">Cart</Link>
+              <Link to="/account" className="nav-link">My Account</Link>
+            </>
+          )}
 
-        {user?.role === "seller" && (
-          <Link to="/seller" style={{ color: "white" }}>Seller Dashboard</Link>
-        )}
+          {user?.role === "seller" && (
+            <Link to="/seller" className="nav-link">Seller Dashboard</Link>
+          )}
 
-        {user?.role === "admin" && (
-          <Link to="/admin" style={{ color: "white" }}>Admin</Link>
-        )}
+          {user?.role === "admin" && (
+            <Link to="/admin" className="nav-link">Admin</Link>
+          )}
 
-        {!user ? (
-          <>
-            <Link to="/login" style={{ color: "white" }}>Login</Link>
-            <Link to="/register" style={{ color: "white" }}>Register</Link>
-          </>
-        ) : (
-          <>
-            <span>{user.name}</span>
-            <button onClick={logout}>Logout</button>
-          </>
-        )}
+          {!user ? (
+            <>
+              <Link to="/login" className="nav-link">Login</Link>
+              <Link to="/register" className="nav-link btn-primary">Register</Link>
+            </>
+          ) : (
+            <>
+              <span className="nav-user">{user.name}</span>
+              <button onClick={logout} className="btn-secondary">Logout</button>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );

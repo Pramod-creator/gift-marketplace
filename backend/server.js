@@ -10,6 +10,8 @@ import cartRoutes from "./src/routes/cartRoutes.js";
 import orderRoutes from "./src/routes/orderRoutes.js";
 import sellerRoutes from "./src/routes/sellerRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
+import authRoutes from "./src/routes/authRoutes.js";
+import productRoutes from "./src/routes/productRoutes.js";
 
 const PORT = process.env.PORT || 5000;
 
@@ -28,6 +30,9 @@ const startServer = async () => {
 };
 
 app.use("/api/test", testRoutes);
+
+app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
 
 // Serve uploaded files
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));

@@ -6,9 +6,11 @@ import Products from "../pages/Products";
 import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
 import CartPage from "../features/cart/CartPage";
+import OrderSuccess from "../pages/OrderSuccess";
 
 import AdminDashboard from "../features/admin/AdminDashboard";
 import SellerDashboard from "../features/seller/SellerDashboard";
+import CustomerDashboard from "../features/customer/CustomerDashboard";
 
 import MainLayout from "../layouts/MainLayout";
 
@@ -29,6 +31,7 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         )
       },
+      { path: "order/success", element: <OrderSuccess /> },
 
       {
         path: "admin",
@@ -44,6 +47,15 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute roles={["seller"]}>
             <SellerDashboard />
+          </ProtectedRoute>
+        )
+      },
+
+      {
+        path: "account",
+        element: (
+          <ProtectedRoute roles={["customer"]}>
+            <CustomerDashboard />
           </ProtectedRoute>
         )
       }

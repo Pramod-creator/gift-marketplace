@@ -1,5 +1,8 @@
 import { useEffect, useState, useContext } from "react";
 import { getCart, updateCartItem, removeCartItem } from "../../api/cart.api";
+import { checkout as checkoutApi } from "../../api/orders.api";
+import { useNavigate } from "react-router-dom";
+import "../../styles/cart.css";
 import { AuthContext } from "../../auth/AuthContext";
 
 export default function CartPage() {
@@ -40,13 +43,12 @@ export default function CartPage() {
     }
   };
 
-  const handleRemove = async (productId) => {
+  const handleRemove = async (cartItemId) => {
     try {
-      await removeCartItem(productId);
+      // remove by cart item id
+      await removeCartItem(cartItemId);
 
-      setCartItems((prev) =>
-        prev.filter((item) => item.product_id !== productId)
-      );
+      setCartItems((prev) => prev.filter((item) => item.id !== cartItemId));
     } catch (err) {
       alert(err.response?.data?.message || "Failed to remove item");
     }
@@ -57,98 +59,119 @@ export default function CartPage() {
     return sum + price * item.quantity;
   }, 0);
 
-  if (loading) return <p>Loading cart...</p>;
-  if (!cartItems.length) return <p>Your cart is empty</p>;
+  const navigate = useNavigate();
+  const [processing, setProcessing] = useState(false);
+
+  if (loading) {
+    return (
+      <div className="flex-center" style={{ minHeight: "400px" }}>
+        <div className="loader"></div>
+      </div>
+    );
+  }
+
+  if (!cartItems.length) {
+    return (
+      <div className="container text-center py-4">
+        <h2>Your Cart is Empty</h2>
+        <p className="text-gray-600 mb-4">Add some gifts to get started!</p>
+        <a href="/" className="btn-primary" style={{ display: "inline-block" }}>Continue Shopping</a>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ maxWidth: "900px", margin: "0 auto", padding: "2rem" }}>
-      <h2>Your Cart</h2>
+    <div className="container py-4">
+      <h2>Shopping Cart</h2>
 
-      {cartItems.map((item) => (
-        <div
-          key={item.id}
-          style={{
-            display: "flex",
-            gap: "1rem",
-            border: "1px solid #ccc",
-            padding: "1rem",
-            marginBottom: "1rem",
-            borderRadius: "8px",
-            alignItems: "center",
-          }}
-        >
-          {item.product?.image_url ? (
-            <img
-              src={`http://localhost:5000/uploads/products/${item.product.image_url}`}
-              alt={item.product?.name}
-              style={{
-                width: "100px",
-                height: "100px",
-                objectFit: "cover",
-                borderRadius: "6px",
+      <div className="grid grid-2" style={{ marginTop: "2rem" }}>
+        <div>
+              {cartItems.map((item) => (
+            <div key={item.id} className="cart-item">
+              <div className="cart-item-image">
+                {item.product?.image_url ? (
+                  <img
+                    src={`http://localhost:5000/uploads/products/${item.product.image_url}`}
+                    alt={item.product?.name}
+                  />
+                ) : (
+                  <div className="placeholder-image">No Image</div>
+                )}
+              </div>
+
+              <div className="cart-item-content">
+                <h4>{item.product?.name}</h4>
+                <p className="text-sm text-gray-600">by {item.product?.User?.name}</p>
+                <p className="text-lg font-bold text-primary">Rs {parseFloat(item.product?.price).toLocaleString()}</p>
+              </div>
+
+              <div className="cart-item-controls">
+                <div className="qty-control">
+                  <label htmlFor={`qty-${item.id}`}>Quantity:</label>
+                  <input
+                    id={`qty-${item.id}`}
+                    type="number"
+                    min="1"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      handleQuantityChange(item.product_id, Number(e.target.value))
+                    }
+                  />
+                </div>
+                <button
+                  className="btn-danger"
+                  onClick={() => handleRemove(item.id)}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div>
+          <div className="cart-summary">
+
+            <h3>Order Summary</h3>
+            <div className="summary-row">
+              <span>Subtotal</span>
+              <span>Rs {totalPrice.toFixed(2)}</span>
+            </div>
+            <div className="summary-row">
+              <span>Shipping</span>
+              <span>Free</span>
+            </div>
+            <div className="summary-row summary-total">
+              <span>Total</span>
+              <span>Rs {totalPrice.toFixed(2)}</span>
+            </div>
+
+            <button
+              className="btn-primary"
+              onClick={async () => {
+                if (processing) return;
+                setProcessing(true);
+                try {
+                  const res = await checkoutApi();
+                  navigate("/order/success", { state: { order: res.data } });
+                } catch (err) {
+                  alert(err.response?.data?.message || "Checkout failed");
+                } finally {
+                  setProcessing(false);
+                }
               }}
-            />
-          ) : (
-            <div
-              style={{
-                width: "100px",
-                height: "100px",
-                backgroundColor: "#f0f0f0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: "6px",
-                color: "#999",
-                fontSize: "12px",
-              }}
+              disabled={processing}
+              style={{ width: "100%", marginTop: "1.5rem" }}
             >
-              No Image
-            </div>
-          )}
+              {processing ? "Processing..." : "Proceed to Checkout"}
+            </button>
 
-          <div style={{ flex: 1 }}>
-            <h4>{item.product?.name}</h4>
-            <p>Seller: {item.product?.User?.name}</p>
-            <p>Price: Rs {item.product?.price}</p>
-
-            <div>
-              <label>
-                Qty:
-                <input
-                  type="number"
-                  min="1"
-                  value={item.quantity}
-                  onChange={(e) =>
-                    handleQuantityChange(
-                      item.product_id,
-                      Number(e.target.value)
-                    )
-                  }
-                  style={{ width: "60px", marginLeft: "0.5rem" }}
-                />
-              </label>
-
-              <button
-                onClick={() => handleRemove(item.product_id)}
-                style={{ marginLeft: "1rem" }}
-              >
-                Remove
-              </button>
-            </div>
+            <a href="/" className="btn-secondary" style={{ width: "100%", marginTop: "1rem", display: "block", textAlign: "center" }}>
+              Continue Shopping
+            </a>
           </div>
         </div>
-      ))}
-
-      <h3>Total: Rs {totalPrice.toFixed(2)}</h3>
-
-      <button
-        style={{ padding: "0.5rem 1rem", marginTop: "1rem" }}
-        onClick={() =>
-          alert("Checkout functionality not yet implemented")
-        }
-      >
-        Proceed to Checkout
-      </button>
+      </div>
     </div>
   );
 }
