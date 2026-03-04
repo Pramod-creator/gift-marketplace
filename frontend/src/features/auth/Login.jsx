@@ -84,7 +84,7 @@ export default function Login() {
           </button>
         </form>
 
-        <p className="text-center text-gray-600" style={{ marginTop: "1.5rem" }}>
+        <p className="text-center text-secondary" style={{ marginTop: "1.5rem" }}>
           Don't have an account? <a href="/register">Register here</a>
         </p>
       </div>

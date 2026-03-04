@@ -1,0 +1,40 @@
+/* home hero and featured section */
+.home-hero {
+  background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.7) 100%), url('https://source.unsplash.com/featured/?gifts');
+  background-size: cover;
+  background-position: center;
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-text);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-hero .hero-content h1 {
+  font-size: 2.5rem;
+  animation: fadeInDown 1s ease-out;
+}
+
+.home-hero .hero-content p {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  animation: fadeInUp 1s ease-out 0.3s;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.home-featured h2 {
+  margin-bottom: 1rem;
+  text-align: center;
+}

@@ -1,3 +1,29 @@
+.dashboard-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  flex: 1;
+  background: var(--surface-2);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  text-align: center;
+}
+
+.stat-card h4 {
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.stat-card p {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
 .dashboard-tabs {
   display: flex;
   gap: 1rem;
@@ -24,8 +50,8 @@
 }
 
 .tab-btn.active {
-  color: var(--primary);
-  border-bottom-color: var(--primary);
+  color: var(--text-primary);
+  border-bottom-color: var(--accent);
   transform: none;
 }
 

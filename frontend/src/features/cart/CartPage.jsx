@@ -148,17 +148,8 @@ export default function CartPage() {
 
             <button
               className="btn-primary"
-              onClick={async () => {
-                if (processing) return;
-                setProcessing(true);
-                try {
-                  const res = await checkoutApi();
-                  navigate("/order/success", { state: { order: res.data } });
-                } catch (err) {
-                  alert(err.response?.data?.message || "Checkout failed");
-                } finally {
-                  setProcessing(false);
-                }
+              onClick={() => {
+                navigate("/checkout", { state: { fromCart: true } });
               }}
               disabled={processing}
               style={{ width: "100%", marginTop: "1.5rem" }}

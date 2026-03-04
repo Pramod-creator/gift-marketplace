@@ -56,9 +56,23 @@ export default function AdminDashboard() {
     }
   };
 
+  const userCount = users.length;
+  const orderCount = orders.length;
+
   return (
     <div className="container py-4">
       <h2>Admin Dashboard</h2>
+
+      <div className="dashboard-stats">
+        <div className="stat-card">
+          <h4>Total Users</h4>
+          <p>{userCount}</p>
+        </div>
+        <div className="stat-card">
+          <h4>Total Orders</h4>
+          <p>{orderCount}</p>
+        </div>
+      </div>
 
       {error && <div className="alert alert-error mb-4">{error}</div>}
       {success && <div className="alert alert-success mb-4">{success}</div>}

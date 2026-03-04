@@ -22,6 +22,18 @@ export default function OrderSuccess() {
               <span>Total Amount:</span>
               <span className="font-bold text-primary">Rs {parseFloat(order.total_price).toLocaleString()}</span>
             </div>
+            {order.shipping_address && (
+              <div className="detail-row">
+                <span>Shipping Address:</span>
+                <span className="font-bold">{order.shipping_address}</span>
+              </div>
+            )}
+            {order.phone && (
+              <div className="detail-row">
+                <span>Phone:</span>
+                <span className="font-bold">{order.phone}</span>
+              </div>
+            )}
             <div className="detail-row">
               <span>Status:</span>
               <span className="font-bold text-success">{order.status || "Pending"}</span>

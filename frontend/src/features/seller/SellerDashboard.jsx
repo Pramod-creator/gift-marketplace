@@ -18,6 +18,9 @@ export default function SellerDashboard() {
     image: null
   });
 
+  const productCount = products.length;
+  const orderCount = orders.length;
+
   useEffect(() => {
     fetchData();
   }, [activeTab]);
@@ -81,6 +84,17 @@ export default function SellerDashboard() {
   return (
     <div className="container py-4">
       <h2>Seller Dashboard</h2>
+
+      <div className="dashboard-stats">
+        <div className="stat-card">
+          <h4>My Products</h4>
+          <p>{productCount}</p>
+        </div>
+        <div className="stat-card">
+          <h4>Orders Received</h4>
+          <p>{orderCount}</p>
+        </div>
+      </div>
 
       {error && <div className="alert alert-error mb-4">{error}</div>}
       {success && <div className="alert alert-success mb-4">{success}</div>}

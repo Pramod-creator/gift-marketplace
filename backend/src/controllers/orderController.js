@@ -5,6 +5,7 @@ import Product from "../models/Product.js";
 import sequelize from "../config/database.js";
 
 export const checkout = async (req, res) => {
+  const { shipping_address, phone } = req.body;
   const t = await sequelize.transaction();
 
   try {
@@ -25,7 +26,7 @@ export const checkout = async (req, res) => {
     });
 
     const order = await Order.create(
-      { user_id: req.user.id, total_price: total },
+      { user_id: req.user.id, total_price: total, shipping_address, phone },
       { transaction: t }
     );
 
@@ -46,6 +47,37 @@ export const checkout = async (req, res) => {
   } catch (err) {
     await t.rollback();
     res.status(500).json({ message: "Checkout failed" });
+  }
+};
+
+export const buyProduct = async (req, res) => {
+  const { product_id, quantity = 1, shipping_address, phone } = req.body;
+
+  try {
+    const product = await Product.findByPk(product_id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    const total = quantity * parseFloat(product.price);
+    const order = await Order.create({
+      user_id: req.user.id,
+      total_price: total,
+      shipping_address,
+      phone
+    });
+
+    await OrderItem.create({
+      order_id: order.id,
+      product_id,
+      quantity,
+      price: product.price
+    });
+
+    res.status(201).json(order);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Buy now failed" });
   }
 };
 

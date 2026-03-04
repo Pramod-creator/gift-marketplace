@@ -1,11 +1,11 @@
 .success-container {
   text-align: center;
-  background: white;
+  background: var(--surface-1);
   padding: 3rem 2rem;
   border-radius: 1rem;
   max-width: 500px;
   margin: 2rem auto;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
 }
 
 .success-icon {
@@ -35,17 +35,17 @@
 }
 
 .success-container h2 {
-  color: var(--gray-900);
+  color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
 .success-container > p {
-  color: var(--gray-600);
+  color: var(--text-secondary);
   margin-bottom: 2rem;
 }
 
 .order-details {
-  background-color: var(--gray-50);
+  background-color: var(--surface-2);
   padding: 1.5rem;
   border-radius: 0.5rem;
   margin: 2rem 0;
@@ -57,7 +57,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 0;
-  border-bottom: 1px solid var(--gray-200);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .detail-row:last-child {
@@ -65,7 +65,7 @@
 }
 
 .detail-row span:first-child {
-  color: var(--gray-600);
+  color: var(--text-secondary);
 }
 
 .action-buttons {

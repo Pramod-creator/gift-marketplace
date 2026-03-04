@@ -104,14 +104,31 @@ export default function Products() {
             </div>
 
             {user?.role === "customer" && (
-              <button
-                className="btn-primary"
-                onClick={() => handleAddToCart(p.id, p.name)}
-                disabled={addingToCart[p.id]}
-                style={{ width: "100%", marginTop: "auto" }}
-              >
-                {addingToCart[p.id] ? "Adding..." : "Add to Cart"}
-              </button>
+              <>
+                <button
+                  className="btn-primary"
+                  onClick={() => handleAddToCart(p.id, p.name)}
+                  disabled={addingToCart[p.id]}
+                  style={{ width: "100%", marginTop: "auto" }}
+                >
+                  {addingToCart[p.id] ? "Adding..." : "Add to Cart"}
+                </button>
+                <button
+                  className="btn-secondary mt-2"
+                  onClick={() => {
+                    if (!user) {
+                      navigate("/login");
+                      return;
+                    }
+                    navigate("/checkout", {
+                      state: { prefillItem: { product: p, quantity: 1 } }
+                    });
+                  }}
+                  style={{ width: "100%" }}
+                >
+                  Buy Now
+                </button>
+              </>
             )}
           </div>
         ))}

@@ -127,7 +127,7 @@ export default function Register() {
           </button>
         </form>
 
-        <p className="text-center text-gray-600" style={{ marginTop: "1.5rem" }}>
+        <p className="text-center text-secondary" style={{ marginTop: "1.5rem" }}>
           Already have an account? <a href="/login">Login here</a>
         </p>
       </div>

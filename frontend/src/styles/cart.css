@@ -2,9 +2,9 @@
   display: flex;
   gap: 1.5rem;
   padding: 1.5rem;
-  background: white;
+  background: var(--surface-1);
   border-radius: 0.75rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   margin-bottom: 1rem;
   align-items: flex-start;
 }
@@ -26,11 +26,11 @@
 .placeholder-image {
   width: 100%;
   height: 100%;
-  background-color: var(--gray-200);
+  background-color: var(--border-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--gray-500);
+  color: var(--text-secondary);
   font-size: 0.75rem;
   text-align: center;
 }
@@ -71,10 +71,10 @@
 }
 
 .cart-summary {
-  background: white;
+  background: var(--surface-1);
   padding: 2rem;
   border-radius: 0.75rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   position: sticky;
   top: 2rem;
 }
@@ -88,7 +88,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 0;
-  border-bottom: 1px solid var(--gray-200);
+  border-bottom: 1px solid var(--border-color);
   font-size: 0.95rem;
 }
 
@@ -97,12 +97,11 @@
 }
 
 .summary-row span:last-child {
-  font-weight: 600;
-}
+  font-weight: 600;  color: var(--text-primary);}
 
 .summary-total {
   border-bottom: none;
-  border-top: 2px solid var(--gray-300);
+  border-top: 2px solid var(--border-color);
   padding: 1.5rem 0;
   font-size: 1.1rem;
 }

@@ -1,6 +1,6 @@
 .navbar {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  color: white;
+  background: var(--surface-1);
+  color: var(--text-primary);
   padding: 1rem 0;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   position: sticky;
@@ -21,7 +21,7 @@
 .navbar-brand {
   font-size: 1.5rem;
   font-weight: 700;
-  color: white;
+  color: var(--text-primary);
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -41,7 +41,7 @@
 }
 
 .nav-link {
-  color: white;
+  color: var(--text-primary);
   text-decoration: none;
   font-weight: 500;
   transition: opacity 0.2s;
@@ -55,7 +55,7 @@
 }
 
 .nav-user {
-  color: white;
+  color: var(--text-primary);
   font-weight: 600;
 }
 

@@ -6,6 +6,7 @@ import Products from "../pages/Products";
 import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
 import CartPage from "../features/cart/CartPage";
+import Checkout from "../pages/Checkout";
 import OrderSuccess from "../pages/OrderSuccess";
 
 import AdminDashboard from "../features/admin/AdminDashboard";
@@ -19,7 +20,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: <MainLayout />,
     children: [
-      { index: true, element: <Products /> },
+      { index: true, element: <Home /> },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
 
@@ -31,6 +32,11 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         )
       },
+      { path: "checkout", element: (
+        <ProtectedRoute roles={["customer"]}>
+          <Checkout />
+        </ProtectedRoute>
+      ) },
       { path: "order/success", element: <OrderSuccess /> },
 
       {

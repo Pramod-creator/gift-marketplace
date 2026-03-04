@@ -10,6 +10,14 @@ const Order = sequelize.define("Order", {
   status: {
     type: DataTypes.ENUM("pending", "paid", "shipped", "completed", "cancelled"),
     defaultValue: "pending"
+  },
+  shipping_address: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: true
   }
 }, {
   tableName: "orders",
