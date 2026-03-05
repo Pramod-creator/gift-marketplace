@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { getAllUsers, toggleUserStatus, getAllOrders, deactivateProduct } from "../../api/admin.api";
+import { getCategories, createCategory, deleteCategory } from "../../api/categories.api";
 import "../../styles/dashboard.css";
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState("");
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("users");
   const [error, setError] = useState("");
@@ -25,11 +28,40 @@ export default function AdminDashboard() {
       } else if (activeTab === "orders") {
         const res = await getAllOrders();
         setOrders(Array.isArray(res.data) ? res.data : []);
+      } else if (activeTab === "categories") {
+        const res = await getCategories();
+        setCategories(Array.isArray(res.data) ? res.data : []);
       }
     } catch (err) {
       setError(err.response?.data?.message || "Failed to load data");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreateCategory = async (e) => {
+    e.preventDefault();
+    if (!newCategory.trim()) return setError("Category name is required");
+    try {
+      await createCategory({ name: newCategory.trim() });
+      setSuccess("Category created");
+      setNewCategory("");
+      setTimeout(() => setSuccess(""), 2500);
+      fetchData();
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to create category");
+    }
+  };
+
+  const handleDeleteCategory = async (id) => {
+    if (!window.confirm("Remove this category?")) return;
+    try {
+      await deleteCategory(id);
+      setSuccess("Category removed");
+      setTimeout(() => setSuccess(""), 2500);
+      fetchData();
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to remove category");
     }
   };
 
@@ -83,6 +115,12 @@ export default function AdminDashboard() {
           onClick={() => setActiveTab("users")}
         >
           Users
+        </button>
+        <button
+          className={`tab-btn ${activeTab === "categories" ? "active" : ""}`}
+          onClick={() => setActiveTab("categories")}
+        >
+          Categories
         </button>
         <button
           className={`tab-btn ${activeTab === "orders" ? "active" : ""}`}
@@ -141,7 +179,7 @@ export default function AdminDashboard() {
             </table>
           )}
         </div>
-      ) : (
+      ) : activeTab === "orders" ? (
         <div className="dashboard-table">
           <h3>All Orders</h3>
           {orders.length === 0 ? (
@@ -152,7 +190,6 @@ export default function AdminDashboard() {
                 <div key={order.id} className="card order-card">
                   <div className="order-header">
                     <div>
-                      <h4>Order #{order.id}</h4>
                       <p className="text-tertiary">Customer: {order.User?.name}</p>
                     </div>
                     <div className="order-meta">
@@ -175,6 +212,46 @@ export default function AdminDashboard() {
                 </div>
               ))}
             </div>
+          )}
+        </div>
+      ) : (
+        <div className="dashboard-table">
+          <h3>Categories</h3>
+          <div className="mb-4 card">
+            <form onSubmit={handleCreateCategory} className="flex gap-2">
+              <input
+                placeholder="New category name"
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                className="flex-1"
+              />
+              <button className="btn-primary">Create</button>
+            </form>
+          </div>
+
+          {categories.length === 0 ? (
+            <p className="text-tertiary">No categories found</p>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {categories.map((c) => (
+                  <tr key={c.id}>
+                    <td>#{c.id}</td>
+                    <td>{c.name}</td>
+                    <td>
+                      <button className="btn-danger" onClick={() => handleDeleteCategory(c.id)}>Remove</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
         </div>
       )}

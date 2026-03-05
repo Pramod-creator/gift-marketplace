@@ -1,5 +1,7 @@
 import { useEffect, useState, useContext } from "react";
+import { useLocation } from "react-router-dom";
 import { getProducts } from "../api/products.api";
+import { getCategories } from "../api/categories.api";
 import { addToCart } from "../api/cart.api";
 import { AuthContext } from "../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -11,14 +13,22 @@ export default function Products() {
   const [error, setError] = useState("");
   const [addingToCart, setAddingToCart] = useState({});
   const [successMsg, setSuccessMsg] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
+  // load products and refetch when category or search changes
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setError("");
-        const res = await getProducts();
+        const opts = {};
+        if (selectedCategory) opts.category = selectedCategory;
+        if (searchQuery) opts.search = searchQuery;
+        const res = await getProducts(opts);
         const productList = Array.isArray(res.data?.products)
           ? res.data.products
           : [];
@@ -33,6 +43,28 @@ export default function Products() {
     };
 
     fetchProducts();
+  }, [selectedCategory, searchQuery]);
+
+  // initialize from query params
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const cat = params.get("category") || "";
+    const search = params.get("search") || "";
+    if (cat) setSelectedCategory(cat);
+    if (search) setSearchQuery(search);
+  }, [location.search]);
+
+  // fetch categories on mount
+  useEffect(() => {
+    const loadCats = async () => {
+      try {
+        const res = await getCategories();
+        setCategories(Array.isArray(res.data) ? res.data : []);
+      } catch (e) {
+        console.error("Failed to load categories", e);
+      }
+    };
+    loadCats();
   }, []);
 
   const handleAddToCart = async (productId, productName) => {
@@ -80,6 +112,21 @@ export default function Products() {
 
   return (
     <div className="container py-4">
+      {/* category filter */}
+      <div className="flex gap-2 items-center mb-4">
+        <label htmlFor="cat" className="text-secondary font-semibold">Category:</label>
+        <select
+          id="cat"
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="select-category"
+        >
+          <option value="">All</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </select>
+      </div>
       {successMsg && <div className="alert alert-success mb-4">{successMsg}</div>}
       
       <div className="grid grid-3">
@@ -98,6 +145,7 @@ export default function Products() {
 
             <div className="product-content">
               <h3>{p.name}</h3>
+              {p.Category && <span className="text-sm text-secondary">{p.Category.name}</span>}
               <p className="text-gray-600 text-sm mb-2">{p.description}</p>
               <p className="text-xl font-bold text-primary mb-2">Rs {parseFloat(p.price).toLocaleString()}</p>
               <p className="text-sm text-gray-500">by {p.User?.name}</p>

@@ -1,11 +1,25 @@
-import { Link } from "react-router-dom";
-import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../auth/AuthContext";
 import "../styles/navbar.css";
 
 export default function Navbar() {
   const { user, setUser } = useContext(AuthContext);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  // debounced search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchQuery.trim()) {
+        navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
+      } else {
+        navigate("/products");
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchQuery, navigate]);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -16,9 +30,23 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-container container">
-        <Link to="/" className="navbar-brand">
-          🎁 Gift Marketplace
-        </Link>
+        <div className="nav-left">
+          <Link to="/" className="navbar-brand">
+            <div className="brand-logo">🎁</div>
+            <div className="brand-text">
+              <div className="brand-title">Gift Marketplace</div>
+              <div className="brand-sub">Unique gifts & curated finds</div>
+            </div>
+          </Link>
+
+          <div className="nav-search">
+            <input 
+              placeholder="Search gifts, categories..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
 
         <div className="navbar-menu">
           <Link to="/" className="nav-link">Products</Link>

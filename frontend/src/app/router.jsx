@@ -14,6 +14,7 @@ import SellerDashboard from "../features/seller/SellerDashboard";
 import CustomerDashboard from "../features/customer/CustomerDashboard";
 
 import MainLayout from "../layouts/MainLayout";
+import NotFound from "../pages/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <Home /> },
+      { path: "products", element: <Products /> },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
 
@@ -64,7 +66,8 @@ export const router = createBrowserRouter([
             <CustomerDashboard />
           </ProtectedRoute>
         )
-      }
+      },
+      { path: "*", element: <NotFound /> }
     ]
   }
 ]);

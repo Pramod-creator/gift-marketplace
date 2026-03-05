@@ -159,6 +159,14 @@ input, textarea, select {
   color: var(--text-primary);
 }
 
+.select-category {
+  padding: 0.5rem 0.75rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 0.5rem;
+}
+
 input::placeholder, textarea::placeholder {
   color: var(--text-tertiary);
 }

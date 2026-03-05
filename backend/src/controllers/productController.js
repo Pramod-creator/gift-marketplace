@@ -1,5 +1,7 @@
 import Product from "../models/Product.js";
 import User from "../models/User.js";
+import Category from "../models/Category.js";
+import { Op } from "sequelize";
 
 /**
  * @desc   Create product (Seller/Admin)
@@ -7,7 +9,7 @@ import User from "../models/User.js";
  */
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, price } = req.body;
+    const { name, description, price, category_id } = req.body;
 
     if (!name || !price || Number(price) <= 0) {
       return res.status(400).json({ message: "Valid name and price required" });
@@ -21,6 +23,7 @@ export const createProduct = async (req, res) => {
       name: name.trim(),
       description,
       price: Number(price),
+      category_id: category_id || null,
       image_url: req.file ? req.file.path : null,
       seller_id: req.user.id
     });
@@ -30,17 +33,6 @@ export const createProduct = async (req, res) => {
     console.error("Create product error:", error.message);
     res.status(500).json({ message: "Failed to create product" });
   }
-
-    const { name, description, price, category_id } = req.body;
-
-    const product = await Product.create({
-      name,
-      description,
-      price,
-      category_id,
-      image_url: req.file ? `/${req.file.path.replace(/\\/g, "/")}` : null,
-      seller_id: req.user.id
-    });
 };
 
 /**
@@ -52,16 +44,33 @@ export const getProducts = async (req, res) => {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
     const offset = (page - 1) * limit;
+    // filter by category if provided
+    const categoryId = req.query.category;
+    const searchQuery = req.query.search;
+
+    const whereClause = { is_active: true };
+    if (categoryId) {
+      whereClause.category_id = categoryId;
+    }
+    if (searchQuery) {
+      whereClause.name = { [Op.iLike]: `%${searchQuery}%` };
+    }
 
     const { rows, count } = await Product.findAndCountAll({
-      where: { is_active: true },
+      where: whereClause,
       order: [["createdAt", "DESC"]],
       limit,
       offset,
-      include: {
-        model: User,
-        attributes: ["id", "name", "email"]
-      }
+      include: [
+        {
+          model: User,
+          attributes: ["id", "name", "email"]
+        },
+        {
+          model: Category,
+          attributes: ["id", "name"]
+        }
+      ]
     });
 
     res.json({
